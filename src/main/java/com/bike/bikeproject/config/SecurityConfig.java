@@ -40,8 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/auth", "/auth/**").permitAll()
                 .antMatchers("/bike/admin/**").hasRole("ADMIN")
-                .antMatchers("/bike/manager/**").hasAnyRole("ADMIN", "MANAGER")
-                .antMatchers("/bike/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+                .antMatchers("/bike/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated();
         http
                 .sessionManagement()

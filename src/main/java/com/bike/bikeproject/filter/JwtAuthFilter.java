@@ -29,6 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                  @NonNull HttpServletResponse response,
                                  @NonNull FilterChain chain) throws IOException, ServletException {
         // 임시 TEST 용으로 작성 (JWT 구현 전까지 사용할 것)
+        // todo: JWT Auth Filter 처리 (JwtUtil 작성)
         try {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername("elevne");
             UsernamePasswordAuthenticationToken token =
