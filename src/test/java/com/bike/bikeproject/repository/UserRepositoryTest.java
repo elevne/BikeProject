@@ -3,6 +3,7 @@ package com.bike.bikeproject.repository;
 import com.bike.bikeproject.entity.Role;
 import com.bike.bikeproject.entity.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -34,6 +35,7 @@ public class UserRepositoryTest {
     }
 
     @Test
+    @DisplayName("USER Entity 저장 테스트")
     public void findByUsernameTest() {
         // given: @BeforeEach User 을 저장
         userRepository.save(user);
