@@ -1,12 +1,19 @@
 package com.bike.bikeproject.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "place")
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DTYPE")
+@DiscriminatorColumn(name = "dtype")
 public abstract class Place {
+
+    @Column(name="dtype", insertable = false, updatable = false)
+    protected String dtype;
 
     @Id @Column(name = "place_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +37,14 @@ public abstract class Place {
     @OneToOne
     @JoinColumn(name = "station_id")
     private BikeStation bikeStation;
+
+    protected Place(double latitude, double longitude, int ranking,
+                    String name, float time, BikeStation bikeStation) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.ranking = ranking;
+        this.name = name;
+        this.time = time;
+        this.bikeStation = bikeStation;
+    }
 }
