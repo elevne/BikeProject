@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .antMatchers("/auth", "/auth/**").permitAll()
                 .antMatchers("/bike/admin/**").hasRole("ADMIN")
                 .antMatchers("/bike/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .anyRequest().authenticated();
         http
                 .sessionManagement()

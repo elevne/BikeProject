@@ -3,6 +3,10 @@ package com.bike.bikeproject.controller;
 import com.bike.bikeproject.dto.UserDTO;
 import com.bike.bikeproject.entity.User;
 import com.bike.bikeproject.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,9 +24,18 @@ public class AuthController {
 
     private final UserService userService;
 
+    @Operation(summary = "User Sign-Up", description = "유저 회원가입 API")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body("부적절한 유저정보가 넘어옴"); }
+    public ResponseEntity<String> signUp(
+            @RequestBody @Valid UserDTO userDTO
+            , BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body("Invalid User ID or Password"); }
         User user = userService.signUp(userDTO);
         return ResponseEntity.ok(user.toString());
     }

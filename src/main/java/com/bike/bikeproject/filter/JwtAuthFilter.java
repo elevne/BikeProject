@@ -28,8 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NonNull HttpServletRequest request,
                                  @NonNull HttpServletResponse response,
                                  @NonNull FilterChain chain) throws IOException, ServletException {
-        // 임시 TEST 용으로 작성 (JWT 구현 전까지 사용할 것)
-        // todo: JWT Auth Filter 처리 (JwtUtil 작성)
+        // todo: JWT Auth Filter 처리 (JwtUtil 작성) <현재: 임시 TEST 용으로 작성 (JWT 구현 전까지 사용할 것)>
         try {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername("elevne");
             UsernamePasswordAuthenticationToken token =
@@ -38,9 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request)
             );
             SecurityContextHolder.getContext().setAuthentication(token);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
         chain.doFilter(request, response);
         return;
     }
