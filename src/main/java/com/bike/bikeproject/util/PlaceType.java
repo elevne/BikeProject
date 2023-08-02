@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 @Getter
@@ -48,9 +49,10 @@ public enum PlaceType {
             });
 
     public static PlaceType ofDtype(String dtype) {
+        Objects.requireNonNull(dtype);
         return Arrays.stream(values())
                 .filter(p -> p.dtype.equals(dtype))
-                .findFirst()
+                .findAny()
                 .orElseThrow(RuntimeException::new);  // todo: 적절한 예외로 바꿔 던지기
     }
 
