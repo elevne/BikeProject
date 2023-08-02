@@ -1,6 +1,6 @@
 package com.bike.bikeproject.util;
 
-public interface PlaceBatchUtil {
+public interface DestinationBatchUtil {
 
     void batchInsert(PlaceType placeType);
 

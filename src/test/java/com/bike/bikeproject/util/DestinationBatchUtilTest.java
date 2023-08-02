@@ -1,26 +1,30 @@
 package com.bike.bikeproject.util;
 
 import com.bike.bikeproject.entity.Cafe;
-import com.bike.bikeproject.entity.Place;
-import com.bike.bikeproject.repository.PlaceRepository;
-import com.bike.bikeproject.util.impl.SimplePlaceBatchUtil;
+import com.bike.bikeproject.entity.Destination;
+import com.bike.bikeproject.entity.Restaurant;
+import com.bike.bikeproject.entity.Travel;
+import com.bike.bikeproject.repository.DestinationRepository;
+import com.bike.bikeproject.util.impl.SimpleDestinationBatchUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class PlaceBatchUtilTest {
+public class DestinationBatchUtilTest {
 
-    @Autowired SimplePlaceBatchUtil placeBatchUtil;
+    @Autowired
+    SimpleDestinationBatchUtil placeBatchUtil;
 
-    @Autowired PlaceRepository placeRepository;
+    @Autowired
+    DestinationRepository destinationRepository;
 
     @Test
     @Transactional
@@ -30,9 +34,9 @@ public class PlaceBatchUtilTest {
         placeBatchUtil.batchInsert(PlaceType.CAFE);
         placeBatchUtil.batchInsert(PlaceType.RESTAURANT);
         placeBatchUtil.batchInsert(PlaceType.TRAVEL);
-        List<Place> cafes = placeRepository.findAllByDtype("C");
-        List<Place> restaurants = placeRepository.findAllByDtype("R");
-        List<Place> travels = placeRepository.findAllByDtype("T");
+        List<Destination> cafes = destinationRepository.findAllByDtype("C");
+        List<Destination> restaurants = destinationRepository.findAllByDtype("R");
+        List<Destination> travels = destinationRepository.findAllByDtype("T");
         // then: 현재 데이터 파일에 있는 데이터 수
         assertEquals(cafes.size(), 41);
         assertEquals(restaurants.size(), 149);

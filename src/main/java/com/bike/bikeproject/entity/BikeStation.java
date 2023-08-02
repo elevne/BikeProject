@@ -1,14 +1,22 @@
 package com.bike.bikeproject.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "bike_station")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class BikeStation {
 
     @Id @Column(name = "station_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "latitude", nullable = false)
     private double latitude;

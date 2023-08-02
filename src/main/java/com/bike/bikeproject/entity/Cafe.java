@@ -1,6 +1,5 @@
 package com.bike.bikeproject.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +9,12 @@ import javax.persistence.Entity;
 @Entity
 @NoArgsConstructor
 @DiscriminatorValue("C")
-public class Cafe extends Place {
+public class Cafe extends Destination {
 
     @Builder
     public Cafe(double latitude, double longitude, int ranking,
-                String name, float time, BikeStation bikeStation) {
-        super(latitude, longitude, ranking, name, time, bikeStation);
+                String name, BikeStation bikeStation) {
+        super(latitude, longitude, ranking, name, bikeStation);
     }
 
 }
