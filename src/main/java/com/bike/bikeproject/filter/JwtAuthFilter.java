@@ -1,6 +1,6 @@
 package com.bike.bikeproject.filter;
 
-import com.bike.bikeproject.component.JwtUtil;
+import com.bike.bikeproject.util.impl.JwtUtilImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-    private final JwtUtil            jwtUtil;
+    private final JwtUtilImpl jwtUtil;
 
     @Override
     public void doFilterInternal(@NonNull HttpServletRequest request,
