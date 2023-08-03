@@ -16,7 +16,7 @@ public abstract class Destination {
     @Column(name="dtype", insertable = false, updatable = false)
     protected String dtype;
 
-    @Id @Column(name = "place_id")
+    @Id @Column(name = "destination_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
