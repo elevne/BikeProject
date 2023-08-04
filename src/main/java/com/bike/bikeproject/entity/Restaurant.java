@@ -9,12 +9,12 @@ import javax.persistence.Entity;
 @Entity
 @NoArgsConstructor
 @DiscriminatorValue("R")
-public class Restaurant extends Place {
+public class Restaurant extends Destination {
 
     @Builder
     public Restaurant(double latitude, double longitude, int ranking,
-                String name, float time, BikeStation bikeStation) {
-        super(latitude, longitude, ranking, name, time, bikeStation);
+                String name, BikeStation bikeStation) {
+        super(latitude, longitude, ranking, name, bikeStation);
     }
 
 }

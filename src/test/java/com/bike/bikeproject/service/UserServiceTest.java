@@ -24,6 +24,7 @@ public class UserServiceTest {
     @MockBean UserRepository userRepository;
 
     @Autowired UserService userService;
+
     @Autowired PasswordEncoder passwordEncoder;
 
     private UserDTO userDTO;
