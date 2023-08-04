@@ -1,32 +1,28 @@
 package com.bike.bikeproject.util;
 
-import com.bike.bikeproject.entity.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * DestinationBatchUtil 에서 Destination 구체 타입 구분 용으로 사용되는 열거 타입
  */
 @Getter
 @RequiredArgsConstructor
-public enum PlaceType {
+public enum DestinationType {
 
     CAFE("data/cafe.txt", "C"),
     RESTAURANT("data/rest.txt", "R"),
     TRAVEL("data/trav.txt", "T");
 
-    public static PlaceType ofDtype(String dtype) {
+    public static DestinationType ofDtype(String dtype) {
         Objects.requireNonNull(dtype);
         return Arrays.stream(values())
                 .filter(p -> p.dtype.equals(dtype))
                 .findAny()
-                .orElseThrow(RuntimeException::new);  // todo: 적절한 예외로 바꿔 던지기
+                .orElseThrow(() -> new IllegalArgumentException("String variable 'dtype'(" + dtype + ") does not contain any of C/R/T"));
     }
 
     private final String filepath;

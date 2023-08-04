@@ -6,20 +6,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
     /**
-     * Controller 에서 발생하는 모든 예외를 한 번에 로깅 및
-     * 예외에 따라 올바르게 처리해줄 수 있게끔 작성함
+     * .txt 파일을 읽고 Batch Insert 작업을 진행하는 부분에서 잘못된 파일 형식 등의 이유로 발생할 수 있는 예외
+     * @param ioException @RestController 에서 발생하는 IOException
+     * @return HttpStatus Code 500
+     */
+    @ExceptionHandler(IOException.class)
+    protected final ResponseEntity<String> handleIOException(IOException ioException) {
+        log.error("Exception Occurred: {}", ioException.getMessage());
+        return new ResponseEntity<>("ERROR READING FILE", HttpStatus.INTERNAL_SERVER_ERROR);  // 500
+    }
+
+    /**
+     * 클라이언트에서 잘못된 (규약에 맞지 않는) 값을 파라미터로 넘겼을 때 발생할 수 있는 예외
+     * @param illegalArgumentException @RestController 에서 발생하는 IllegalArgumentException
+     * @return HttpStatus Code 400
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected final ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        log.error("Exception Occurred: {}", illegalArgumentException.getMessage());
+        return new ResponseEntity<>("BAD PARAMETER PASSED IN", HttpStatus.BAD_REQUEST);  // 400
+    }
+
+    /**
+     * 위 예외를 제외하고 발생할 수 있는 예외들을 전부 로깅 처리
      * @param exception RestController 에서 발생하는 모든 Exception 을 처리
-     * @return ResponseEntity 는 오류에 따라 다른 Status 를 반환해야 함
-     * todo: 오류에 따른 HttpStatus 응답 메시지 분기 처리 or 메소드 분리
+     * @return HttpStatus Code 500
      */
     @ExceptionHandler(Exception.class)
     protected final ResponseEntity<String> handleAllExceptions(Exception exception) {
-        log.error("Exception has occurred: {}", exception.getMessage());
+        log.error("Exception Occurred: {}", exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

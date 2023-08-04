@@ -1,9 +1,6 @@
 package com.bike.bikeproject.util;
 
-import com.bike.bikeproject.entity.Cafe;
 import com.bike.bikeproject.entity.Destination;
-import com.bike.bikeproject.entity.Restaurant;
-import com.bike.bikeproject.entity.Travel;
 import com.bike.bikeproject.repository.DestinationRepository;
 import com.bike.bikeproject.util.impl.SimpleDestinationBatchUtil;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +28,9 @@ public class DestinationBatchUtilTest {
     @DisplayName("간단 배치 입력 작업 테스트")
     public void batchInsertTest() {
         // given, when
-        placeBatchUtil.batchInsert(PlaceType.CAFE);
-        placeBatchUtil.batchInsert(PlaceType.RESTAURANT);
-        placeBatchUtil.batchInsert(PlaceType.TRAVEL);
+        placeBatchUtil.batchInsert(DestinationType.CAFE);
+        placeBatchUtil.batchInsert(DestinationType.RESTAURANT);
+        placeBatchUtil.batchInsert(DestinationType.TRAVEL);
         List<Destination> cafes = destinationRepository.findAllByDtype("C");
         List<Destination> restaurants = destinationRepository.findAllByDtype("R");
         List<Destination> travels = destinationRepository.findAllByDtype("T");

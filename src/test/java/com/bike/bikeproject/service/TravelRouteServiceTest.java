@@ -1,7 +1,7 @@
 package com.bike.bikeproject.service;
 
 import com.bike.bikeproject.dto.DestinationDTO;
-import com.bike.bikeproject.dto.SuggestedRouteDTO;
+import com.bike.bikeproject.vo.SuggestedRouteVO;
 import com.bike.bikeproject.entity.Travel;
 import com.bike.bikeproject.repository.DestinationRepository;
 import com.bike.bikeproject.util.DistanceUtil;
@@ -65,7 +65,7 @@ public class TravelRouteServiceTest {
         when(destinationRepository.getDTOList(List.of(1L, 2L, 3L)))
                 .thenReturn(destinations);
         // when
-        SuggestedRouteDTO result = travelRouteService.getSuggestedRoute(startAndEnd, List.of(1L, 2L, 3L));
+        SuggestedRouteVO result = travelRouteService.getSuggestedRoute(startAndEnd, List.of(1L, 2L, 3L));
         List<Double> allRouteDistances = getDistanceOfAllCases(destinationDTOList);
         // then
         assertEquals(result.getSuggestedRoute().size(), 5);

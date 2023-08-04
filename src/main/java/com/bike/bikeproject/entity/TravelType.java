@@ -19,6 +19,6 @@ public enum TravelType {
         return Arrays.stream(values())
                 .filter(t -> type.contains(t.description))
                 .findAny()
-                .orElseThrow(RuntimeException::new);  // todo: 적절한 예외로 바꿔서 던지기
+                .orElseThrow(() -> new IllegalArgumentException("String variable 'type'" + type + " does not contain any of 문화/쇼핑/역사/휴양"));
     }
 }

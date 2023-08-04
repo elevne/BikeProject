@@ -1,15 +1,13 @@
-package com.bike.bikeproject.dto;
+package com.bike.bikeproject.vo;
 
+import com.bike.bikeproject.dto.DestinationDTO;
 import lombok.*;
 
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class SuggestedRouteDTO {
+public class SuggestedRouteVO {
 
     private List<DestinationDTO> suggestedRoute;
 

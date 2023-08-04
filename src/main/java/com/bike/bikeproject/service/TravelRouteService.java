@@ -1,12 +1,12 @@
 package com.bike.bikeproject.service;
 
 import com.bike.bikeproject.dto.DestinationDTO;
-import com.bike.bikeproject.dto.SuggestedRouteDTO;
+import com.bike.bikeproject.vo.SuggestedRouteVO;
 
 import java.util.List;
 
 public interface TravelRouteService {
 
-    SuggestedRouteDTO getSuggestedRoute(DestinationDTO destinationDTO, List<Long> destinationIds);
+    SuggestedRouteVO getSuggestedRoute(DestinationDTO destinationDTO, List<Long> destinationIds) throws IllegalAccessException;
 
 }

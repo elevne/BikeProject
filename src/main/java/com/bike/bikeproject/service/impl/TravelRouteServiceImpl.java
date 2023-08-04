@@ -1,7 +1,7 @@
 package com.bike.bikeproject.service.impl;
 
 import com.bike.bikeproject.dto.DestinationDTO;
-import com.bike.bikeproject.dto.SuggestedRouteDTO;
+import com.bike.bikeproject.vo.SuggestedRouteVO;
 import com.bike.bikeproject.repository.DestinationRepository;
 import com.bike.bikeproject.service.TravelRouteService;
 import com.bike.bikeproject.util.DistanceUtil;
@@ -31,7 +31,8 @@ public class TravelRouteServiceImpl implements TravelRouteService {
      * @return 추천경로 정보를 담은 리스트
      */
     @Override
-    public SuggestedRouteDTO getSuggestedRoute(DestinationDTO startAndEnd, List<Long> destinationIds) {
+    public SuggestedRouteVO getSuggestedRoute(DestinationDTO startAndEnd, List<Long> destinationIds) throws IllegalAccessException {
+        if (destinationIds.size() < 2) throw new IllegalAccessException("Size of List<Long> destinationIds must be larger than '2'");
         List<DestinationDTO> destinations = new ArrayList<>();
         destinations.add(startAndEnd);
         destinations.addAll(destinationRepository.getDTOList(destinationIds));
@@ -48,7 +49,7 @@ public class TravelRouteServiceImpl implements TravelRouteService {
             if (i != (orders.size() - 1)) dto.setOrder(i);
             suggestedRoute.add(dto);
         }
-        return new SuggestedRouteDTO(suggestedRoute, tsp.getTotalDistance());
+        return new SuggestedRouteVO(suggestedRoute, tsp.getTotalDistance());
     }
 
 

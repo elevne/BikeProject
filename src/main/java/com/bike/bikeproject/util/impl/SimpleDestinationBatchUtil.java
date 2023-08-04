@@ -4,8 +4,9 @@ import com.bike.bikeproject.entity.*;
 import com.bike.bikeproject.repository.BikeStationRepository;
 import com.bike.bikeproject.repository.DestinationRepository;
 import com.bike.bikeproject.util.DestinationBatchUtil;
-import com.bike.bikeproject.util.PlaceType;
+import com.bike.bikeproject.util.DestinationType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
@@ -32,38 +34,46 @@ public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
     /**
      * 여행지 정보가 최신화 되면 txt, csv 파일 등으로 /data 경로에 저장,
      * DB 에 있는 정보와 동기화 해줄 수 있다.
-     * @param placeType Cafe, Restaurant, Travel 중 하나의 여행지 타입
+     * @param destinationType Cafe, Restaurant, Travel 중 하나의 여행지 타입
      */
     @Override
     @Transactional
-    public void batchInsert(PlaceType placeType) {
-        destinationRepository.deleteAllByDtype(placeType.getDtype());
-        List<List<String>> dataFile = readFile(placeType);
+    public void batchInsert(DestinationType destinationType) throws IOException {
+        destinationRepository.deleteAllByDtype(destinationType.getDtype());
+        List<List<String>> dataFile = readFile(destinationType);
 
         List<Destination> batch = new ArrayList<>();
         for (int i = 1; i < dataFile.size(); i++) {  // 첫 번째 행은 컬럼명 행이기 때문에 i 를 1 부터 시작
-            Destination destination = listToDestination(dataFile.get(i), placeType);
-            batch.add(destination);
+            try {
+                // txt 파일에서 정보를 읽어 Entity 로 매핑해주는 과정에서 오타 등의 이유로 예외가 발생할 수 있음
+                Destination destination = listToDestination(dataFile.get(i), destinationType);
+                batch.add(destination);
+            } catch (IllegalArgumentException illegalArgumentException) {
+                log.error("Insertion error at line " + String.valueOf(i+1) +
+                            "of file (" + destinationType.getFilepath() + ")" +
+                            " while mapping to entity");
+            }
         }
         destinationRepository.saveAll(batch);
     }
 
-    private List<List<String>> readFile(PlaceType placeType) {
+    private List<List<String>> readFile(DestinationType destinationType) throws IOException {
         List<List<String>> records = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(placeType.getFilepath()))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(destinationType.getFilepath()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
                 records.add(Arrays.asList(values));
             }
-        } catch (IOException e) {
-            throw new RuntimeException();  // todo: 적절한 예외로 바꿔 던지기
+        } catch (IOException ioException) {
+            log.error("Exception raised while reading file " + destinationType.getFilepath());
+            throw new IOException();
         }
         return records;
     }
 
-    private Destination listToDestination(List<String> dataList, PlaceType placeType) {
-        switch (placeType) {
+    private Destination listToDestination(List<String> dataList, DestinationType destinationType) throws IllegalArgumentException {
+        switch (destinationType) {
             case CAFE:
                 return listToCafe(dataList);
             case RESTAURANT:
@@ -71,11 +81,11 @@ public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
             case TRAVEL:
                 return listToTravel(dataList);
             default:
-                throw new RuntimeException();  // todo: 적절한 예외로 바꿔 던지기
+                throw new IllegalArgumentException(destinationType.name() + " is not configured in " + this.getClass().getSimpleName());
         }
     }
 
-    private Cafe listToCafe(List<String> dataList) {
+    private Cafe listToCafe(List<String> dataList) throws IllegalArgumentException {
         return Cafe.builder()
                 .latitude(Double.parseDouble(dataList.get(1)))
                 .longitude(Double.parseDouble(dataList.get(2)))
@@ -85,7 +95,7 @@ public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
                 .build();
     }
 
-    private Restaurant listToRestaurant(List<String> dataList) {
+    private Restaurant listToRestaurant(List<String> dataList) throws IllegalArgumentException {
         return Restaurant.builder()
                 .latitude(Double.parseDouble(dataList.get(1)))
                 .longitude(Double.parseDouble(dataList.get(2)))
@@ -95,7 +105,7 @@ public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
                 .build();
     }
 
-    private Travel listToTravel(List<String> dataList) {
+    private Travel listToTravel(List<String> dataList) throws IllegalArgumentException {
         return Travel.builder()
                 .latitude(Double.parseDouble(dataList.get(1)))
                 .longitude(Double.parseDouble(dataList.get(2)))

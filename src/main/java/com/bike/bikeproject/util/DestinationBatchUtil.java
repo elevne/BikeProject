@@ -1,7 +1,9 @@
 package com.bike.bikeproject.util;
 
+import java.io.IOException;
+
 public interface DestinationBatchUtil {
 
-    void batchInsert(PlaceType placeType);
+    void batchInsert(DestinationType destinationType) throws IOException;
 
 }
