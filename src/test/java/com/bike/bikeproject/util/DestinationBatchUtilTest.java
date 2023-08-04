@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +27,7 @@ public class DestinationBatchUtilTest {
     @Test
     @Transactional
     @DisplayName("간단 배치 입력 작업 테스트")
-    public void batchInsertTest() {
+    public void batchInsertTest() throws IOException {
         // given, when
         placeBatchUtil.batchInsert(DestinationType.CAFE);
         placeBatchUtil.batchInsert(DestinationType.RESTAURANT);

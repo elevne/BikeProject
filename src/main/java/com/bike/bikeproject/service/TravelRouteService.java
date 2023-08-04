@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TravelRouteService {
 
-    SuggestedRouteVO getSuggestedRoute(DestinationDTO destinationDTO, List<Long> destinationIds) throws IllegalAccessException;
+    SuggestedRouteVO getSuggestedRoute(DestinationDTO destinationDTO, List<Long> destinationIds) throws IllegalArgumentException;
 
 }

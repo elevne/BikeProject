@@ -31,8 +31,8 @@ public class TravelRouteServiceImpl implements TravelRouteService {
      * @return 추천경로 정보를 담은 리스트
      */
     @Override
-    public SuggestedRouteVO getSuggestedRoute(DestinationDTO startAndEnd, List<Long> destinationIds) throws IllegalAccessException {
-        if (destinationIds.size() < 2) throw new IllegalAccessException("Size of List<Long> destinationIds must be larger than '2'");
+    public SuggestedRouteVO getSuggestedRoute(DestinationDTO startAndEnd, List<Long> destinationIds) throws IllegalArgumentException {
+        if (destinationIds.size() < 2) throw new IllegalArgumentException("Size of List<Long> destinationIds must be larger than '2'");
         List<DestinationDTO> destinations = new ArrayList<>();
         destinations.add(startAndEnd);
         destinations.addAll(destinationRepository.getDTOList(destinationIds));
@@ -107,7 +107,7 @@ public class TravelRouteServiceImpl implements TravelRouteService {
                     lastNode = i;
                 }
             }
-            // 최단 경로의 루트를 구합니다.
+            // 최단 경로의 루트
             List<Integer> path = new ArrayList<>();
             path.add(0);
             while (lastNode != -1) {

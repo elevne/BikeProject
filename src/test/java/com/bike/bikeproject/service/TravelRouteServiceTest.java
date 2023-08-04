@@ -49,7 +49,7 @@ public class TravelRouteServiceTest {
     }
 
     @Test
-    public void permutationsTest() {
+    public void permutationsTest() throws IllegalArgumentException {
         // given: @BeforeEach +
         List<DestinationDTO> destinations = List.of(
                 new DestinationDTO(travel1.getName(), travel1.getLatitude(), travel1.getLongitude(), null, null, 0),
