@@ -7,6 +7,8 @@ import com.google.gson.JsonObject;
  */
 public interface BikeApiUtil {
 
-    void batchInsertBikeStation();
+    JsonObject requestSeoulBikeAPI(int startIdx, int endIdx);
+
+    JsonObject requestSeoulBikeAPI(int idx);
 
 }

@@ -2,7 +2,7 @@ package com.bike.bikeproject.util;
 
 import com.bike.bikeproject.entity.Destination;
 import com.bike.bikeproject.repository.DestinationRepository;
-import com.bike.bikeproject.util.impl.SimpleDestinationBatchUtil;
+import com.bike.bikeproject.service.impl.SimpleDestinationBatchServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class DestinationBatchUtilTest {
+public class SimpleDestinationBatchServiceTest {
 
     @Autowired
-    SimpleDestinationBatchUtil placeBatchUtil;
+    SimpleDestinationBatchServiceImpl placeBatchUtil;
 
     @Autowired
     DestinationRepository destinationRepository;

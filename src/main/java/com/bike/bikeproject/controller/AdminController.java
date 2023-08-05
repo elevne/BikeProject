@@ -1,7 +1,7 @@
 package com.bike.bikeproject.controller;
 
-import com.bike.bikeproject.util.BikeApiUtil;
-import com.bike.bikeproject.util.DestinationBatchUtil;
+import com.bike.bikeproject.service.SimpleBikeStationBatchService;
+import com.bike.bikeproject.service.SimpleDestinationBatchService;
 import com.bike.bikeproject.util.DestinationType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,9 +20,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final DestinationBatchUtil batchUtil;
+    private final SimpleDestinationBatchService destinationBatchService;
 
-    private final BikeApiUtil bikeApiUtil;
+    private final SimpleBikeStationBatchService bikeStationBatchService;
 
     @Operation(summary = "Update Bike Station Info", description = "따릉이 API 이용 정류소 정보를 최신정보로 갱신")
     @ApiResponses({
@@ -31,7 +31,7 @@ public class AdminController {
     })
     @GetMapping("/updateStations")
     public ResponseEntity<String> updateStations() {
-        bikeApiUtil.batchInsertBikeStation();
+        bikeStationBatchService.batchInsertBikeStation();
         return ResponseEntity.ok("Batch Insert of Bike Station succeeded");
     }
 
@@ -43,7 +43,7 @@ public class AdminController {
     @GetMapping("/updateDestinations")
     public ResponseEntity<String> updateDestinations(@RequestParam("type") String type) throws IOException, IllegalArgumentException {
         DestinationType pt = DestinationType.ofDtype(type);
-        batchUtil.batchInsert(pt);
+        destinationBatchService.batchInsert(pt);
         return ResponseEntity.ok("Batch Insert Destination for type "+type+" succeeded");
     }
 

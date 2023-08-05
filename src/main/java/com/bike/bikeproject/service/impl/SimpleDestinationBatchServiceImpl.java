@@ -1,16 +1,14 @@
-package com.bike.bikeproject.util.impl;
+package com.bike.bikeproject.service.impl;
 
 import com.bike.bikeproject.entity.*;
 import com.bike.bikeproject.repository.BikeStationRepository;
 import com.bike.bikeproject.repository.DestinationRepository;
-import com.bike.bikeproject.util.DestinationBatchUtil;
+import com.bike.bikeproject.service.SimpleDestinationBatchService;
 import com.bike.bikeproject.util.DestinationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,10 +20,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
-
-    @PersistenceContext
-    EntityManager em;
+public class SimpleDestinationBatchServiceImpl implements SimpleDestinationBatchService {
 
     private final DestinationRepository destinationRepository;
 
