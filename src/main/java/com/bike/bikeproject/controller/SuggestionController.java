@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/suggest")
+@RequestMapping("/bike/suggest")
 @RequiredArgsConstructor
 public class SuggestionController {
 
