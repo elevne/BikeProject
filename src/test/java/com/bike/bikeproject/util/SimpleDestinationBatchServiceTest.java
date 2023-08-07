@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class SimpleDestinationBatchServiceTest {
 
     @Test
     @Transactional
+    @Rollback(value = false)
     @DisplayName("간단 배치 입력 작업 테스트")
     public void batchInsertTest() throws IOException {
         // given, when

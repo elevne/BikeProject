@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.transaction.Transactional;
 import java.net.ConnectException;
@@ -31,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// todo: 여러 개 조회하는 메소드 이 메소드 내부에서 Json 파싱하기 (외부에서 파싱하게 하지 않기) -> JsonArray 로 반환
 @Component
 public class BikeAPIUtilImpl implements BikeApiUtil {
 
@@ -62,7 +62,7 @@ public class BikeAPIUtilImpl implements BikeApiUtil {
     public static final int API_MAX_COUNT = 1000;
 
     @Override
-    public JsonObject requestSeoulBikeAPI(int startIdx, int endIdx) throws BikeAPIException {
+    public JsonArray requestSeoulBikeAPI(int startIdx, int endIdx) throws BikeAPIException {
         String path = "/" + bikeApiKey + PATH + String.valueOf(startIdx) + "/" + String.valueOf(endIdx);
         URI uri = UriComponentsBuilder
                 .fromUriString(API_URI)
@@ -71,22 +71,34 @@ public class BikeAPIUtilImpl implements BikeApiUtil {
                 .build()
                 .toUri();
 
-        JsonObject bikeStationInfo;
+        JsonObject stationsJsonObject;
+        JsonArray stationsJsonArray;
         try {
-            bikeStationInfo = (JsonObject) JsonParser.parseString(
+            stationsJsonObject = (JsonObject) JsonParser.parseString(
                     Objects.requireNonNull(
                             restTemplate
                                     .getForEntity(uri, String.class)
                                     .getBody()
                     ));
+            stationsJsonArray = stationsJsonObject
+                    .getAsJsonObject("rentBikeStatus")
+                    .getAsJsonArray("row");
         } catch (RestClientException | JsonSyntaxException e) {
             throw new BikeAPIException(e);
         }
-        return bikeStationInfo;
+        return stationsJsonArray;
     }
 
     @Override
-    public JsonObject requestSeoulBikeAPI(int idx) throws BikeAPIException {
+    public JsonArray requestSeoulBikeAPI(List<Integer> indexes) throws BikeAPIException {
+        JsonArray stationsJsonArray = new JsonArray();
+        for (Integer idx : indexes) {
+            stationsJsonArray.add(requestSeoulBikeAPI(idx));
+        }
+        return stationsJsonArray;
+    }
+
+    private JsonObject requestSeoulBikeAPI(int idx) throws BikeAPIException {
         String path = "/" + bikeApiKey + PATH + String.valueOf(idx) + "/" + String.valueOf(idx);
         URI uri = UriComponentsBuilder
                 .fromUriString(API_URI)
@@ -112,5 +124,4 @@ public class BikeAPIUtilImpl implements BikeApiUtil {
         }
         return bikeStationInfo;
     }
-
 }

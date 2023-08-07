@@ -2,15 +2,21 @@ package com.bike.bikeproject.repository;
 
 import com.bike.bikeproject.dto.DestinationDTO;
 import com.bike.bikeproject.entity.Destination;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface DestinationRepository extends JpaRepository<Destination, Long> {
 
-    void deleteAllByDtype(String dtype);
+    @Modifying
+    @Query("DELETE FROM Destination d WHERE d.dtype = :dtype")
+    void deleteAllByDtype(@Param("dtype") String dtype);
 
     List<Destination> findAllByDtype(String dtype);
 

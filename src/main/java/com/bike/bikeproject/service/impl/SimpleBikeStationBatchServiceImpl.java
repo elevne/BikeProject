@@ -24,7 +24,6 @@ public class SimpleBikeStationBatchServiceImpl implements SimpleBikeStationBatch
 
     private final BikeApiUtil bikeApiUtil;
 
-    // todo: Batch 처리 잘 되고 있는지 MySQL 로그 설정 / 확인
     /**
      * 서울 따릉이 API 에서 정류소 정보 받아와 DB 에 저장
      */
@@ -36,15 +35,12 @@ public class SimpleBikeStationBatchServiceImpl implements SimpleBikeStationBatch
         int i = 1;
         List<BikeStation> bikeStationList = new ArrayList<>();
         while (next) {
-            JsonObject stationsJson = bikeApiUtil.requestSeoulBikeAPI(i, i+API_MAX_COUNT-1);
-            JsonArray stationsJsonArray =
-                    stationsJson.getAsJsonObject("rentBikeStatus")
-                            .getAsJsonArray("row");
-            for (int j = 0; j < stationsJsonArray.size(); j++) {
-                BikeStation bikeStation = jsonToBike((JsonObject) stationsJsonArray.get(j), i+j);
+            JsonArray stations = bikeApiUtil.requestSeoulBikeAPI(i, i+API_MAX_COUNT-1);
+            for (int j = 0; j < stations.size(); j++) {
+                BikeStation bikeStation = jsonToBike((JsonObject) stations.get(j), i+j);
                 bikeStationList.add(bikeStation);
             }
-            if (stationsJsonArray.size() < API_MAX_COUNT) next = false;
+            if (stations.size() < API_MAX_COUNT) next = false;
             else i += API_MAX_COUNT;
         }
 

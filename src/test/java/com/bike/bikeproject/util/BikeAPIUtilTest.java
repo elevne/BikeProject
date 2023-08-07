@@ -3,6 +3,7 @@ package com.bike.bikeproject.util;
 import com.bike.bikeproject.util.impl.BikeAPIUtilImpl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import io.swagger.models.auth.In;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -141,21 +144,25 @@ public class BikeAPIUtilTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
         // when
-        JsonObject result = bikeApiUtil.requestSeoulBikeAPI(1, 10);
-        int listTotalCount = result.getAsJsonObject("rentBikeStatus").get("list_total_count").getAsInt();
-        JsonArray list = result.getAsJsonObject("rentBikeStatus").getAsJsonArray("row");
+        JsonArray result = bikeApiUtil.requestSeoulBikeAPI(1, 10);
         // then
-        assertEquals(10, listTotalCount);
-        assertEquals(10, list.size());
+        assertEquals(10, result.size());
     }
 
     @Test
     @DisplayName("정류소 현황 정보 API 로 조회")
     public void requestOneBikeAPITest() {
         // given
-        int idx = 1;
-        String apiURL = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/json/bikeList/" +
-                String.valueOf(idx) + "/" + String.valueOf(idx);
+        int idx1 = 1;
+        int idx2 = 2;
+        int idx3 = 3;
+        List<Integer> indexes = List.of(idx1, idx2, idx3);
+        String apiURL1 = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/json/bikeList/" +
+                String.valueOf(idx1) + "/" + String.valueOf(idx1);
+        String apiURL2 = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/json/bikeList/" +
+                String.valueOf(idx2) + "/" + String.valueOf(idx2);
+        String apiURL3 = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/json/bikeList/" +
+                String.valueOf(idx3) + "/" + String.valueOf(idx3);
         String response = "{\n" +
                 "    \"rentBikeStatus\": {\n" +
                 "        \"list_total_count\": 1,\n" +
@@ -176,10 +183,18 @@ public class BikeAPIUtilTest {
                 "        ]\n" +
                 "    }\n" +
                 "}";
-        mockServer.expect(requestTo(apiURL))
+        mockServer.expect(requestTo(apiURL1))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        mockServer.expect(requestTo(apiURL2))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        mockServer.expect(requestTo(apiURL3))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
         // when
-        JsonObject result = bikeApiUtil.requestSeoulBikeAPI(idx);
+        JsonArray result = bikeApiUtil.requestSeoulBikeAPI(indexes);
+        // then
+        assertEquals(3, result.size());
     }
 }

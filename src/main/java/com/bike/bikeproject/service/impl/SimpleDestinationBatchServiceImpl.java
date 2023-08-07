@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,6 +27,8 @@ public class SimpleDestinationBatchServiceImpl implements SimpleDestinationBatch
     private final DestinationRepository destinationRepository;
 
     private final BikeStationRepository bikeStationRepository;
+
+    @PersistenceContext EntityManager em;
 
     /**
      * 여행지 정보가 최신화 되면 txt, csv 파일 등으로 /data 경로에 저장,
@@ -49,6 +53,7 @@ public class SimpleDestinationBatchServiceImpl implements SimpleDestinationBatch
                             " while mapping to entity");
             }
         }
+        em.flush();
         destinationRepository.saveAll(batch);
     }
 

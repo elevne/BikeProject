@@ -1,5 +1,6 @@
 package com.bike.bikeproject.util;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -9,11 +10,8 @@ import java.util.List;
  */
 public interface BikeApiUtil {
 
-    JsonObject requestSeoulBikeAPI(int startIdx, int endIdx);
+    JsonArray requestSeoulBikeAPI(int startIdx, int endIdx);
 
-    JsonObject requestSeoulBikeAPI(int idx);
-
-    // todo: 위 메소드 이걸로 대체 + 테스트 코드 변경 + 컨트롤러 작성
-    //JsonObject requestSeoulBikeAPI(List<Integer> indexes);
+    JsonArray requestSeoulBikeAPI(List<Integer> indexes);
 
 }

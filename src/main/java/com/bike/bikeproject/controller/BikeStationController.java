@@ -1,6 +1,7 @@
 package com.bike.bikeproject.controller;
 
 import com.bike.bikeproject.util.BikeApiUtil;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,12 +29,11 @@ public class BikeStationController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")
     })
     @GetMapping("/currentSituation")
-    public ResponseEntity<JsonObject> getCurrentSituationOfBikeStation(
+    public ResponseEntity<JsonArray> getCurrentSituationOfBikeStation(
             @RequestParam("indexes") List<Integer> indexes, BindingResult bindingResult
             ) {
-        if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body(new JsonObject()); }
-
-        return null;
+        if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body(new JsonArray()); }
+        return ResponseEntity.ok(bikeApiUtil.requestSeoulBikeAPI(indexes));
     }
 
 }
