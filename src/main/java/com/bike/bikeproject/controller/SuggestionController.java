@@ -26,7 +26,7 @@ public class SuggestionController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")
     })
-    @PostMapping("/tsp")
+    @GetMapping("/tsp")
     public ResponseEntity<SuggestedRouteVO> getSuggestionWithTSP(
             @RequestBody @Valid DestinationDTO startAndEnd, @RequestParam("ids") List<Long> destinationIds, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body(null); }

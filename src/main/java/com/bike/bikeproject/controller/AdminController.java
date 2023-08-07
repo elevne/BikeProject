@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -29,7 +26,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "UPDATE SUCCESS"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @GetMapping("/updateStations")
+    @PutMapping("/updateStations")
     public ResponseEntity<String> updateStations() {
         bikeStationBatchService.batchInsertBikeStation();
         return ResponseEntity.ok("Batch Insert of Bike Station succeeded");
@@ -40,7 +37,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "UPDATE SUCCESS"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @GetMapping("/updateDestinations")
+    @PutMapping("/updateDestinations")
     public ResponseEntity<String> updateDestinations(@RequestParam("type") String type) throws IOException, IllegalArgumentException {
         DestinationType pt = DestinationType.ofDtype(type);
         destinationBatchService.batchInsert(pt);
