@@ -1,8 +1,9 @@
-package com.bike.bikeproject.util;
+package com.bike.bikeproject.service;
 
 import com.bike.bikeproject.entity.Destination;
 import com.bike.bikeproject.repository.DestinationRepository;
 import com.bike.bikeproject.service.impl.SimpleDestinationBatchServiceImpl;
+import com.bike.bikeproject.util.DestinationType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class SimpleDestinationBatchServiceTest {
     @Autowired
     DestinationRepository destinationRepository;
 
+    // todo: 이 테스트 어떻게 개선할 수 있는지 알아보기
     @Test
     @Transactional
     @Rollback(value = false)
