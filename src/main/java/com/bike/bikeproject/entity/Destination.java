@@ -2,11 +2,17 @@ package com.bike.bikeproject.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "destination")
+@SequenceGenerator(
+        name = "destination_seq_generator",
+        initialValue = 1,
+        allocationSize = 150
+)
 @Getter
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -17,7 +23,7 @@ public abstract class Destination {
     protected String dtype;
 
     @Id @Column(name = "destination_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "destination_seq_generator")
     private Long id;
 
     @Column(name = "latitude", nullable = false)

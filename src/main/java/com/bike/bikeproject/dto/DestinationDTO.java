@@ -1,7 +1,10 @@
 package com.bike.bikeproject.dto;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Client 와 Destination 관련 정보를 주고받기 위해 사용하는 DTO
@@ -17,8 +20,12 @@ public class DestinationDTO {
 
     private String name;
 
+    @NotNull
+    @Range(min = 33L, max = 39L)
     private double latitude;
 
+    @NotNull
+    @Range(min = 126L, max = 128L)
     private double longitude;
 
     @Nullable

@@ -1,9 +1,9 @@
-package com.bike.bikeproject.util.impl;
+package com.bike.bikeproject.service.impl;
 
 import com.bike.bikeproject.entity.*;
 import com.bike.bikeproject.repository.BikeStationRepository;
 import com.bike.bikeproject.repository.DestinationRepository;
-import com.bike.bikeproject.util.DestinationBatchUtil;
+import com.bike.bikeproject.service.SimpleDestinationBatchService;
 import com.bike.bikeproject.util.DestinationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +22,13 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
-
-    @PersistenceContext
-    EntityManager em;
+public class SimpleDestinationBatchServiceImpl implements SimpleDestinationBatchService {
 
     private final DestinationRepository destinationRepository;
 
     private final BikeStationRepository bikeStationRepository;
+
+    @PersistenceContext EntityManager em;
 
     /**
      * 여행지 정보가 최신화 되면 txt, csv 파일 등으로 /data 경로에 저장,
@@ -54,6 +53,7 @@ public class SimpleDestinationBatchUtil implements DestinationBatchUtil {
                             " while mapping to entity");
             }
         }
+        em.flush();
         destinationRepository.saveAll(batch);
     }
 

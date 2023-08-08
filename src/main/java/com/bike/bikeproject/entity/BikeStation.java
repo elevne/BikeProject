@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class BikeStation {
+public class BikeStation implements Persistable<Integer> {
 
     @Id @Column(name = "station_id")
     private Integer id;
@@ -27,4 +28,9 @@ public class BikeStation {
     @Column(name = "station_name", nullable = false)
     private String stationName;
 
+    // INSERT 작업 시 매 ROW 마다 SELECT 문이 발생하는 것 방지
+    @Override
+    public boolean isNew() {
+        return true;
+    }
 }
