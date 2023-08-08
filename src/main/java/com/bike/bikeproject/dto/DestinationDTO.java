@@ -21,11 +21,11 @@ public class DestinationDTO {
     private String name;
 
     @NotNull
-    @Range(min = 0L, max = 300L)
+    @Range(min = 33L, max = 39L)
     private double latitude;
 
     @NotNull
-    @Range(min = 0L, max = 300L)
+    @Range(min = 126L, max = 128L)
     private double longitude;
 
     @Nullable
