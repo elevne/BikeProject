@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+@Tag(name = "AUTH", description = "AUTHENTICATION 용 API")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -24,7 +26,8 @@ public class AuthController {
 
     private final UserService userService;
 
-    @Operation(summary = "User Sign-Up", description = "유저 회원가입 API")
+    @Operation(tags = "AUTH",
+            summary = "User Sign-Up", description = "유저 회원가입 API")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
