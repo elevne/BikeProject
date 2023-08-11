@@ -1,5 +1,6 @@
 package com.bike.bikeproject.util;
 
+import com.bike.bikeproject.exception.BikeAPIException;
 import com.bike.bikeproject.util.impl.BikeAPIUtilImpl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -16,6 +17,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -196,5 +198,41 @@ public class BikeAPIUtilTest {
         JsonArray result = bikeApiUtil.requestSeoulBikeAPI(indexes);
         // then
         assertEquals(3, result.size());
+    }
+
+    @Test
+    @DisplayName("따릉이 API 예외처리 테스트")
+    public void requestOneBikeAPIFailTest() {
+        // given
+        int idx1 = 1;
+        List<Integer> indexes = List.of(idx1);
+        String apiURL1 = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/json/bikeList/" +
+                String.valueOf(idx1) + "/" + String.valueOf(idx1);
+        String response = "{\n" +
+                "    \"rentBikeStatus\": {\n" +
+                "        \"list_total_count\": 1,\n" +
+                "        \"RESULT\": {\n" +
+                "            \"CODE\": \"INFO-000\",\n" +
+                "            \"MESSAGE\": \"정상 처리되었습니다.\"\n" +
+                "        },\n" +
+                "        \"row\": [\n" +
+                "            {\n" +
+                "                \"rackTotCnt\": \"15\",\n" +
+                "                \"stationName\": \"102. 망원역 1번출구 앞\",\n" +
+                "                \"parkingBikeTotCnt\": \"2\",\n" +
+                "                \"shared\": \"13\",\n" +
+                "                \"stationLatitude\": \"37.55564880\",\n" +
+                "                \"stationLongitude\": \"126.91062927\",\n" +
+                "                \"stationId\": \"ST-4\"\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    }\n"; // JsonSyntaxException 던지게끔
+        mockServer.expect(requestTo(apiURL1))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        // when, then
+        assertThrows(BikeAPIException.class, () -> {
+            bikeApiUtil.requestSeoulBikeAPI(indexes);
+        });
     }
 }
