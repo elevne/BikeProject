@@ -35,19 +35,15 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>("BAD PARAMETER PASSED IN", HttpStatus.BAD_REQUEST);  // 400
     }
 
-    // todo: HttpStatus code 및 예외 다시 확인해보기
     /**
      * 서울 따릉이 API 호출 중 문제가 발생했을 경우 던져지는 예외
      * @param bikeAPIException @RestController 에서 발생하는 BikeAPIException
-     * @return HttpStatus Code 502 or 504
+     * @return HttpStatus Code 504
      */
     @ExceptionHandler(BikeAPIException.class)
     protected final ResponseEntity<String> handleBikeAPIException(BikeAPIException bikeAPIException) {
         log.error("Exception Occurred ({}: {})", bikeAPIException.getClass().getSimpleName(), bikeAPIException.getMessage());
-        if (bikeAPIException.getCause().getClass().equals(JsonSyntaxException.class)) {
-            return new ResponseEntity<>("BAD RESPONSE FROM BIKE API", HttpStatus.BAD_GATEWAY);
-        }
-        return new ResponseEntity<>("ERROR CALLING SEOUL BIKE API", HttpStatus.GATEWAY_TIMEOUT);  // 504
+        return new ResponseEntity<>("ERROR CALLING SEOUL BIKE API", HttpStatus.GATEWAY_TIMEOUT);
     }
 
     /**
