@@ -26,7 +26,6 @@ public class SimpleDestinationBatchServiceTest {
     @Autowired
     DestinationRepository destinationRepository;
 
-    // todo: 이 테스트 어떻게 개선할 수 있는지 알아보기
     @Test
     @Transactional
     @Rollback(value = false)
