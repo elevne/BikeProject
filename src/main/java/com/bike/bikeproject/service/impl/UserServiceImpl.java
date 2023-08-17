@@ -28,4 +28,6 @@ public class UserServiceImpl implements UserService {
         log.info("USER 회원가입 처리: {}", userToSave.toString());
         return userRepository.save(userToSave);
     }
+
+    // todo: AUTH 관련 작업 이어 작성하기
 }

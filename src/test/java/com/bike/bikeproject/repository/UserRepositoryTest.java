@@ -35,8 +35,8 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("USER Entity 저장 테스트")
-    public void findByUsernameTest() {
+    @DisplayName("User 저장, 검색 테스트")
+    public void testFindByUsername() {
         // given: @BeforeEach User 을 저장
         userRepository.save(user);
         // when: 해당 유저를 findByUsername 메소드로 조회
@@ -46,5 +46,20 @@ public class UserRepositoryTest {
         assertEquals("elevne", user.getUsername());
         assertEquals("1234", user.getPassword());
         assertEquals(Role.ROLE_USER, user.getRole());
+    }
+
+    // todo: username, userId 따로 만들기 -> 지금은 username (unique x) 만 있음 / unique constraint 의 user id 추가하기
+    @Test
+    @DisplayName("User ID 중복 저장 예외 테스트")
+    public void testUserDuplicateID() {
+        // given
+        User user2 = User.builder()
+                        .username("elevne")
+                        .password("5678")
+                        .role(Role.ROLE_USER)
+                        .build();
+        userRepository.save(user);
+        // when, then
+        userRepository.save(user2);
     }
 }
