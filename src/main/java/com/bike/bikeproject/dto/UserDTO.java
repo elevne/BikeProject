@@ -21,4 +21,8 @@ public class UserDTO {
     @Schema(description = "User Password", example = "dlwltm1!")
     private String password;
 
+    @NotEmpty(message = "Username is empty")
+    @Schema(description = "User Name", example = "Wonil")
+    private String username;
+
 }

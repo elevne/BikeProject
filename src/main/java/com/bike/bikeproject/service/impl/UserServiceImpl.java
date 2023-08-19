@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService {
         User userToSave = User.builder()
                 .username(userDTO.getUserId())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
+                .username(userDTO.getUsername())
                 .role(Role.ROLE_USER)
                 .build();
         log.info("USER 회원가입 처리: {}", userToSave.toString());

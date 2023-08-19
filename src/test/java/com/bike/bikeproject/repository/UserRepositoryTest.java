@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -28,8 +30,9 @@ public class UserRepositoryTest {
     @BeforeEach
     public void setUp() {
         user = User.builder()
-                .username("elevne")
+                .userId("elevne")
                 .password("1234")
+                .username("wonil")
                 .role(Role.ROLE_USER)
                 .build();
     }
@@ -48,18 +51,18 @@ public class UserRepositoryTest {
         assertEquals(Role.ROLE_USER, user.getRole());
     }
 
-    // todo: username, userId 따로 만들기 -> 지금은 username (unique x) 만 있음 / unique constraint 의 user id 추가하기
     @Test
     @DisplayName("User ID 중복 저장 예외 테스트")
     public void testUserDuplicateID() {
         // given
         User user2 = User.builder()
-                        .username("elevne")
+                        .userId("elevne")
                         .password("5678")
+                        .username("wonny")
                         .role(Role.ROLE_USER)
                         .build();
         userRepository.save(user);
         // when, then
-        userRepository.save(user2);
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(user2));
     }
 }

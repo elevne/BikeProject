@@ -20,13 +20,18 @@ import java.util.List;
 @AllArgsConstructor
 public class User implements UserDetails {
 
-    @Id @Column(name = "USER_ID")
+    @Id @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    @Column(name = "user_id", unique = true, nullable = false)
+    private String userId;
 
+    @Column(name = "user_password", nullable = false)
     private String password;
+
+    @Column(name = "user_name", nullable = false)
+    private String username;
 
     @Enumerated(EnumType.STRING)
     private Role role;
