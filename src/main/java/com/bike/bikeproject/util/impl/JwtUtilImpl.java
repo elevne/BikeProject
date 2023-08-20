@@ -53,6 +53,8 @@ public class JwtUtilImpl implements JwtUtil {
         return token;
     }
 
+
+    // todo: token validation & refresh token private method 로 만들고 하나의 public 메소드로 처리하기
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userID = extractUserID(token);
         return (userID.equals(userDetails.getUsername())) &&
