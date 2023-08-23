@@ -1,12 +1,17 @@
 package com.bike.bikeproject.service.impl;
 
+import com.bike.bikeproject.dto.JwtDTO;
 import com.bike.bikeproject.dto.UserDTO;
 import com.bike.bikeproject.entity.Role;
 import com.bike.bikeproject.entity.User;
 import com.bike.bikeproject.repository.UserRepository;
 import com.bike.bikeproject.service.UserService;
+import com.bike.bikeproject.util.JwtUtil;
+import com.bike.bikeproject.util.impl.JwtUtilImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public User signUp(UserDTO userDTO) {
@@ -30,5 +37,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userToSave);
     }
 
-    // todo: AUTH 관련 작업 이어 작성하기
+    // todo: 이 파트 다시 확인해보기
+    @Override
+    public JwtDTO authenticate(UserDTO userDTO) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userDTO.getUserId(), userDTO.getPassword()
+                )
+        );
+        User user = userRepository.findByUserId(userDTO.getUserId())
+                .orElseThrow(RuntimeException::new); // todo: Exception 바꾸기
+        String accessToken = jwtUtil.generateAccessToken(user);
+        String refreshToken = jwtUtil.generateRefreshToken(user);
+        return new JwtDTO(accessToken, refreshToken);
+    }
+
+    // todo: Token Refresh 어떻게 할 건지 고민해보기
+
 }
