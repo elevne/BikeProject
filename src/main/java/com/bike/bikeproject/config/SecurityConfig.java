@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .antMatchers("/auth", "/auth/**").permitAll()
                 .antMatchers("/bike/admin/**").hasRole("ADMIN")
                 .antMatchers("/bike/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                .antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll() // todo: 테스트 후 ADMIN 용으로만 막아두기
                 .anyRequest().authenticated();
         http
                 .sessionManagement()
