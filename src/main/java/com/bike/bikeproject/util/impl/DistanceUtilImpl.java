@@ -10,7 +10,9 @@ import java.util.List;
 public class DistanceUtilImpl implements DistanceUtil {
 
     public double[][] getDistanceMap(List<DestinationDTO> destinations) {
-        double[][] distanceMap = new double[destinations.size()][destinations.size()];
+        int listSize = destinations.size();
+        if (listSize <= 1) throw new IllegalArgumentException("DestinationDTO List Size must be bigger than 1");
+        double[][] distanceMap = new double[listSize][listSize];
         for (int i = 0; i < destinations.size(); i++) {
             for (int j = i; j < destinations.size(); j++) {
                 if (i == j) distanceMap[i][j] = 0;
