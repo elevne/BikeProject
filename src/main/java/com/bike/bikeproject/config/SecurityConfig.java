@@ -1,5 +1,6 @@
 package com.bike.bikeproject.config;
 
+import com.bike.bikeproject.entity.Role;
 import com.bike.bikeproject.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
