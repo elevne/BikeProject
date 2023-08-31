@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.function.Function;
 
 // todo: Date 클래스와 다른 날짜 유틸 클래스 비교 후 코드 변경할지 결정하기
+// todo: @Override 달아주기
 @Component
 @RequiredArgsConstructor
 public class JwtUtilImpl implements JwtUtil {
@@ -32,7 +33,8 @@ public class JwtUtilImpl implements JwtUtil {
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
 
-    public String extractUserID(String token) {
+    @Override
+    public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -56,7 +58,7 @@ public class JwtUtilImpl implements JwtUtil {
 
     // todo: token validation & refresh token private method 로 만들고 하나의 public 메소드로 처리하기
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userID = extractUserID(token);
+        final String userID = extractUserId(token);
         return (userID.equals(userDetails.getUsername())) &&
                 !isTokenExpired(token);
     }

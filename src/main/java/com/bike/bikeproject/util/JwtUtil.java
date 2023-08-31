@@ -10,4 +10,6 @@ public interface JwtUtil {
 
     boolean isTokenValid(String token, UserDetails userDetails);
 
+    String extractUserId(String token);
+
 }
