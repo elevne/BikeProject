@@ -30,6 +30,7 @@ public class AdminController {
             summary = "Update Bike Station Info", description = "따릉이 API 이용 정류소 정보를 최신정보로 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "UPDATE SUCCESS"),
+            @ApiResponse(responseCode = "403", description = "ONLY ADMIN CAN ACCESS TO THE API"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PutMapping("/updateStations")
@@ -42,6 +43,7 @@ public class AdminController {
             summary = "Update Destinations Info", description = "여행지/식당/카페 정보 갱신 (전처리 완료한 새로운 txt 파일 필요)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "UPDATE SUCCESS"),
+            @ApiResponse(responseCode = "403", description = "ONLY ADMIN CAN ACCESS TO THE API"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PutMapping("/updateDestinations")
