@@ -21,7 +21,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(
         value = AdminController.class,
@@ -43,7 +44,7 @@ public class AdminControllerTest {
 
     @Test
     @WithCustomMockUser(userRole = Role.ROLE_ADMIN)
-    @DisplayName("따릉이 API 이용 정류소 정보 갱신 API (ADMIN 용) 테스트")
+    @DisplayName("ADMIN 용 따릉이 API 이용 정류소 정보 갱신 API 호출 테스트")
     public void updateStationsAPITest() throws Exception {
         // given
         doNothing().when(bikeStationBatchService).batchInsertBikeStation();
@@ -52,11 +53,64 @@ public class AdminControllerTest {
                 MockMvcRequestBuilders
                 .put("/bike/admin/updateStations")
                 .with(csrf()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("Batch Insert of Bike Station succeeded"));
         verify(bikeStationBatchService, times(1))
                 .batchInsertBikeStation();
     }
 
-    // todo: ADMIN 아닌 일반 권한으로 실행했을 때 예외 나는 것부터 이어서 작성~
+    @Test
+    @WithCustomMockUser(userRole = Role.ROLE_USER)
+    @DisplayName("ADMIN 용 따릉이 API 이용 정류소 정보 갱신 API 호출 예외발생 테스트")
+    public void updateStationsAPIExceptionTest() throws Exception {
+        // given
+        doNothing().when(bikeStationBatchService).batchInsertBikeStation();
+        // when, then
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .put("/bike/admin/updateStations")
+                                .with(csrf()))
+                .andExpect(status().isForbidden());
+        verify(bikeStationBatchService, times(0))
+                .batchInsertBikeStation();
+    }
+
+    @Test
+    @WithCustomMockUser(userRole = Role.ROLE_ADMIN)
+    @DisplayName("ADMIN 용 전처리된 데이터파일 이용 여행지/식당/카페 정보 갱신 API 호출 테스트")
+    public void updateDestinationsAPITest() throws Exception {
+        // given
+        doNothing().when(destinationBatchService).batchInsert(any());
+        String[] destinationTypes = {"C", "R", "T"};
+        // when, then
+        for (String type : destinationTypes) {
+            mockMvc.perform(
+                            MockMvcRequestBuilders
+                                    .put("/bike/admin/updateDestinations?type="+type)
+                                    .with(csrf()))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Batch Insert Destination for type "+type+" succeeded"));
+        }
+        verify(destinationBatchService, times(3))
+                .batchInsert(any());
+    }
+
+    @Test
+    @WithCustomMockUser(userRole = Role.ROLE_USER)
+    @DisplayName("ADMIN 용 전처리된 데이터파일 이용 여행지/식당/카페 정보 갱신 API 호출 예외발생 테스트")
+    public void updateDestinationsAPIExceptionTest() throws Exception {
+        // given
+        doNothing().when(destinationBatchService).batchInsert(any());
+        String[] destinationTypes = {"C", "R", "T"};
+        // when, then
+        for (String type : destinationTypes) {
+            mockMvc.perform(
+                            MockMvcRequestBuilders
+                                    .put("/bike/admin/updateDestinations?type="+type)
+                                    .with(csrf()))
+                    .andExpect(status().isForbidden());
+        }
+        verify(destinationBatchService, times(0))
+                .batchInsert(any());
+    }
 }
