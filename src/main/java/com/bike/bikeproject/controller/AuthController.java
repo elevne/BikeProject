@@ -3,6 +3,7 @@ package com.bike.bikeproject.controller;
 import com.bike.bikeproject.dto.UserDTO;
 import com.bike.bikeproject.entity.User;
 import com.bike.bikeproject.service.UserService;
+import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +27,8 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final Gson gson;
+
     @Operation(tags = "AUTH",
             summary = "User Sign-Up", description = "유저 회원가입 API")
     @ApiResponses({
@@ -40,7 +43,7 @@ public class AuthController {
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body("Invalid User ID or Password"); }
         User user = userService.signUp(userDTO);
-        return ResponseEntity.ok(user.toString());
+        return ResponseEntity.ok(gson.toJson(user));
     }
 
 }

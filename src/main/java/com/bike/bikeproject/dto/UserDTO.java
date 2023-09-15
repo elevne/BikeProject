@@ -2,13 +2,17 @@ package com.bike.bikeproject.dto;
 
 import com.bike.bikeproject.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Schema(description = "User 정보 DTO")
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     @Size(min = 5, max = 20)

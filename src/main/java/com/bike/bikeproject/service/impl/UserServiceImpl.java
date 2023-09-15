@@ -4,6 +4,7 @@ import com.bike.bikeproject.dto.JwtDTO;
 import com.bike.bikeproject.dto.UserDTO;
 import com.bike.bikeproject.entity.Role;
 import com.bike.bikeproject.entity.User;
+import com.bike.bikeproject.exception.AuthenticationException;
 import com.bike.bikeproject.repository.UserRepository;
 import com.bike.bikeproject.service.UserService;
 import com.bike.bikeproject.util.JwtUtil;
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
                 )
         );
         User user = userRepository.findByUserId(userDTO.getUserId())
-                .orElseThrow(RuntimeException::new); // todo: Exception 바꾸기
+                .orElseThrow(() -> new AuthenticationException("User with ID " + userDTO.getUserId() + " is not present"));
         String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
         return new JwtDTO(accessToken, refreshToken);

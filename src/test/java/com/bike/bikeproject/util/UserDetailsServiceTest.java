@@ -45,7 +45,7 @@ public class UserDetailsServiceTest {
         when(userRepository.findByUserId(user.getUserId())).thenReturn(Optional.of(user));
         UserDetails userDetails = userDetailsService.loadUserByUsername("elevne");
         // when, then
-        assertEquals(userDetails.getUsername(), "Wonil"); // todo: getUsername 메소드 바꿔야하는지 알아보기
+        assertEquals(userDetails.getUsername(), user.getUsername());
     }
 
     @Test
