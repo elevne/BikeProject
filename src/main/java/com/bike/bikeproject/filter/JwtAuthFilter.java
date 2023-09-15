@@ -27,6 +27,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
+    // todo: Filter 흐름: jwt 에서 우선 userId 검증 -> 만약 여기서 틀리면 그냥 잘못된 요청 처리 / 있으면 expired 여부 검사 / 만료되었을 경우에는 바로 그냥 refreshToken 이용해서 token 재발급해주기
+    // todo: AuthHeader 에 refreshtoken 도 한 번에 붙여서 받기?
     @Override
     public void doFilterInternal(@NonNull HttpServletRequest request,
                                  @NonNull HttpServletResponse response,
@@ -42,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             jwt = authHeader.substring(7);
             userId = jwtUtil.extractUserId(jwt);
             if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername("elevne");
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userId);
                 if (jwtUtil.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken token =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -56,5 +58,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.error(e.getClass().getSimpleName() + " raised at JwtAuthFilter: " + e.getMessage());
         }
         chain.doFilter(request, response);
+    }
+
+    private void handleExpiredToken(HttpServletRequest req, HttpServletResponse resp) {
+
     }
 }
