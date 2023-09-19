@@ -42,7 +42,6 @@ public class JwtUtilImpl implements JwtUtil {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    // todo: DB 저장 말고 캐시 저장? (찾아보기)
     @Transactional
     public String generateRefreshToken(UserDetails userDetails) {
         String token = UUID.randomUUID().toString();
@@ -55,25 +54,22 @@ public class JwtUtilImpl implements JwtUtil {
         return token;
     }
 
-    // todo: token validation & refresh token private method 로 만들고 하나의 public 메소드로 처리하기
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userID = extractUserId(token);
-        return (userID.equals(userDetails.getUsername())) &&
-                !isTokenExpired(token);
+    public boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 
-    // todo: Exception 처리 ? 아니면 RefreshToken 이 없을 때 생성하기?
-    public JwtRefreshToken findRefreshTokenByAccessToken(String token) {
+    // todo: Custom Exception 만들어주기
+    public JwtRefreshToken findRefreshToken(String token) {
         return jwtRepository.findByToken(token)
                 .orElseThrow(RuntimeException::new);
     }
 
-    public boolean verifyRefreshToken(JwtRefreshToken refreshToken) {
+    public boolean isRefreshTokenValid(JwtRefreshToken refreshToken, String userId) {
         if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             jwtRepository.delete(refreshToken);
             return false;
         }
-        return true;
+        return userId.equals(refreshToken.getUserId());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -106,13 +102,8 @@ public class JwtUtilImpl implements JwtUtil {
                 .compact();
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
 
 }
