@@ -1,5 +1,6 @@
 package com.bike.bikeproject.util;
 
+import com.bike.bikeproject.entity.JwtRefreshToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtUtil {
@@ -8,8 +9,12 @@ public interface JwtUtil {
 
     String generateRefreshToken(UserDetails userDetails);
 
-    boolean isTokenValid(String token, UserDetails userDetails);
-
     String extractUserId(String token);
+
+    boolean isTokenExpired(String token);
+
+    JwtRefreshToken findRefreshToken(String token);
+
+    boolean isRefreshTokenValid(JwtRefreshToken refreshToken, String userId);
 
 }

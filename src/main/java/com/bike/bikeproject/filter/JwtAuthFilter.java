@@ -1,5 +1,6 @@
 package com.bike.bikeproject.filter;
 
+import com.bike.bikeproject.entity.JwtRefreshToken;
 import com.bike.bikeproject.util.JwtUtil;
 import com.bike.bikeproject.util.impl.JwtUtilImpl;
 import lombok.RequiredArgsConstructor;
@@ -33,26 +34,37 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NonNull HttpServletRequest request,
                                  @NonNull HttpServletResponse response,
                                  @NonNull FilterChain chain) throws IOException, ServletException {
-        // todo: JWT 예외 상황 등등 계속 고쳐나가야 함.
         final String authHeader = request.getHeader("Authorization");
-        final String jwt, userId;
+        final String accessToken, refreshToken, userId;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
         try {
-            jwt = authHeader.substring(7);
-            userId = jwtUtil.extractUserId(jwt);
+            // "Bearer accessToken refreshToken" 형식으로 Authorization header 받기
+            String[] tokens = authHeader.substring(7).split(" ");
+            accessToken = tokens[0];
+            refreshToken = tokens[1];
+            userId = jwtUtil.extractUserId(accessToken);
             if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userId);
-                if (jwtUtil.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken token =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    token.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(token);
+                // userId 정보로 User 정보가 잘 조회되는지 먼저 확인 거침
+                if (!userId.equals(userDetails.getUsername())) {
+                    chain.doFilter(request, response);
+                    return;
                 }
+                // accessToken 이 만료되었을 경우 같이 받은 refreshToken 을 사용하여 새로운 accessToken, refreshToken 넘겨주기
+                if (jwtUtil.isTokenExpired(accessToken)) {
+                    // todo: refresh token 으로 재발급
+                    chain.doFilter(request, response);
+                    return;
+                }
+                UsernamePasswordAuthenticationToken token =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                token.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                SecurityContextHolder.getContext().setAuthentication(token);
             }
         } catch (Exception e) {
             log.error(e.getClass().getSimpleName() + " raised at JwtAuthFilter: " + e.getMessage());
@@ -60,7 +72,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    private void handleExpiredToken(HttpServletRequest req, HttpServletResponse resp) {
-
+    private void handleExpiredToken(String token, UserDetails userDetails,
+                                    HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException{
+        try {
+            JwtRefreshToken refreshToken = jwtUtil.findRefreshToken(token);
+            // todo: getUsername 부터 수정 필요 (통일해야됨)
+            if (jwtUtil.isRefreshTokenValid(refreshToken, userDetails.getUsername())) {
+                // todo: 새로운 accessToken, refreshToken 반환
+            }
+            throw new RuntimeException();  // todo: refreshToken 이 valid 하지 않을 때에도 Custom Exception 만들기
+        } catch (Exception e) {  // todo: findRefreshToken custom exception 만들면 여기도 그거 catch 하도록 하기
+            chain.doFilter(req, resp);
+            return;
+        }
     }
 }
