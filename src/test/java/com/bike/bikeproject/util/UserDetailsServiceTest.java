@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-// todo: 캐시로 바꾸게되면 이것도 전면 수정해야할듯? (지금은 UserDetailsService 가 Repository 의 기능을 수행)
 @SpringBootTest
 public class UserDetailsServiceTest {
 
@@ -34,7 +33,7 @@ public class UserDetailsServiceTest {
         user = User.builder()
                 .userId("elevne")
                 .password("12345678!")
-                .username("Wonil")
+                .name("Wonil")
                 .build();
     }
 

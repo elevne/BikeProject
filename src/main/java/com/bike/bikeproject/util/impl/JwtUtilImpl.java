@@ -1,6 +1,7 @@
 package com.bike.bikeproject.util.impl;
 
 import com.bike.bikeproject.entity.JwtRefreshToken;
+import com.bike.bikeproject.exception.JwtAuthException;
 import com.bike.bikeproject.repository.JwtRefreshTokenRepository;
 import com.bike.bikeproject.repository.UserRepository;
 import com.bike.bikeproject.util.JwtUtil;
@@ -20,8 +21,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 
-// todo: Date 클래스와 다른 날짜 유틸 클래스 비교 후 코드 변경할지 결정하기
-// todo: @Override 달아주기
 @Component
 @RequiredArgsConstructor
 public class JwtUtilImpl implements JwtUtil {
@@ -34,14 +33,11 @@ public class JwtUtilImpl implements JwtUtil {
     private String SECRET_KEY;
 
     @Override
-    public String extractUserId(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
     public String generateAccessToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
+    @Override
     @Transactional
     public String generateRefreshToken(UserDetails userDetails) {
         String token = UUID.randomUUID().toString();
@@ -54,16 +50,23 @@ public class JwtUtilImpl implements JwtUtil {
         return token;
     }
 
+    @Override
+    public String extractUserId(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    @Override
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // todo: Custom Exception 만들어주기
+    @Override
     public JwtRefreshToken findRefreshToken(String token) {
         return jwtRepository.findByToken(token)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new JwtAuthException("REFRESH TOKEN NOT FOUND: " + token));
     }
 
+    @Override
     public boolean isRefreshTokenValid(JwtRefreshToken refreshToken, String userId) {
         if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             jwtRepository.delete(refreshToken);

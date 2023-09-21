@@ -15,7 +15,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // todo: Cache 에 User 정보 저장 (Redis)
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         return userRepository.findByUserId(userId)

@@ -37,9 +37,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userToSave);
     }
 
-    // todo: 이 파트 다시 확인해보기
     @Override
     public JwtDTO authenticate(UserDTO userDTO) {
+        // authenticate 메소드가 내부적으로 인증 과정을 거친다 (패스워드 체크)
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDTO.getUserId(), userDTO.getPassword()
@@ -51,7 +51,5 @@ public class UserServiceImpl implements UserService {
         String refreshToken = jwtUtil.generateRefreshToken(user);
         return new JwtDTO(accessToken, refreshToken);
     }
-
-    // todo: Token Refresh 어떻게 할 건지 고민해보기
 
 }
