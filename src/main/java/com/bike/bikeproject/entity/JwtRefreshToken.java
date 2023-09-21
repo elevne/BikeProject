@@ -6,7 +6,6 @@ import javax.naming.spi.NamingManager;
 import javax.persistence.*;
 import java.time.Instant;
 
-// todo: 캐시화 시킬 수 있는지 찾아보기
 @Entity
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class JwtRefreshToken {
     @Column(name = "token", unique = true)
     private String token;
 
-    // todo: Date 클래스와 비교 / 찾아보기
+    // todo: String 으로 변경해야하는지 찾아보자
     private Instant expiryDate;
 
     private String userId;
