@@ -4,11 +4,10 @@ import com.bike.bikeproject.dto.JwtDTO;
 import com.bike.bikeproject.dto.UserDTO;
 import com.bike.bikeproject.entity.Role;
 import com.bike.bikeproject.entity.User;
-import com.bike.bikeproject.exception.AuthenticationException;
+import com.bike.bikeproject.exception.JwtAuthException;
 import com.bike.bikeproject.repository.UserRepository;
 import com.bike.bikeproject.service.UserService;
 import com.bike.bikeproject.util.JwtUtil;
-import com.bike.bikeproject.util.impl.JwtUtilImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,9 +28,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User signUp(UserDTO userDTO) {
         User userToSave = User.builder()
-                .username(userDTO.getUserId())
+                .userId(userDTO.getUserId())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
-                .username(userDTO.getUsername())
+                .name(userDTO.getUsername())
                 .role(Role.ROLE_USER)
                 .build();
         log.info("USER 회원가입 처리: {}", userToSave.toString());
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserService {
                 )
         );
         User user = userRepository.findByUserId(userDTO.getUserId())
-                .orElseThrow(() -> new AuthenticationException("User with ID " + userDTO.getUserId() + " is not present"));
+                .orElseThrow(() -> new JwtAuthException("User with ID " + userDTO.getUserId() + " is not present"));
         String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
         return new JwtDTO(accessToken, refreshToken);

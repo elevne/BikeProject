@@ -30,11 +30,16 @@ public class User implements UserDetails {
     @Column(name = "user_password", nullable = false)
     private String password;
 
-    @Column(name = "user_name", nullable = false)
-    private String username;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Override
+    public String getUsername() {
+        return this.userId;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

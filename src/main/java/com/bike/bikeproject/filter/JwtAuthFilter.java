@@ -1,12 +1,15 @@
 package com.bike.bikeproject.filter;
 
 import com.bike.bikeproject.entity.JwtRefreshToken;
+import com.bike.bikeproject.exception.JwtAuthException;
 import com.bike.bikeproject.util.JwtUtil;
-import com.bike.bikeproject.util.impl.JwtUtilImpl;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,8 +31,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
-    // todo: Filter 흐름: jwt 에서 우선 userId 검증 -> 만약 여기서 틀리면 그냥 잘못된 요청 처리 / 있으면 expired 여부 검사 / 만료되었을 경우에는 바로 그냥 refreshToken 이용해서 token 재발급해주기
-    // todo: AuthHeader 에 refreshtoken 도 한 번에 붙여서 받기?
     @Override
     public void doFilterInternal(@NonNull HttpServletRequest request,
                                  @NonNull HttpServletResponse response,
@@ -55,9 +56,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
                 // accessToken 이 만료되었을 경우 같이 받은 refreshToken 을 사용하여 새로운 accessToken, refreshToken 넘겨주기
                 if (jwtUtil.isTokenExpired(accessToken)) {
-                    // todo: refresh token 으로 재발급
-                    chain.doFilter(request, response);
-                    return;
+                    try {
+                        handleExpiredToken(refreshToken, userDetails, request, response, chain);
+                        return;
+                    } catch (IOException | ServletException e) {
+                        chain.doFilter(request, response);
+                        return;
+                    }
                 }
                 UsernamePasswordAuthenticationToken token =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -73,15 +78,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private void handleExpiredToken(String token, UserDetails userDetails,
-                                    HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException{
+                                    HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
         try {
             JwtRefreshToken refreshToken = jwtUtil.findRefreshToken(token);
-            // todo: getUsername 부터 수정 필요 (통일해야됨)
+            // 만약 액세스 토큰이 기간만료된 것이라면, 새로운 액세스 토큰 생성해서 다시 보내주기 (이 때는 403 으로 나갈 것)
             if (jwtUtil.isRefreshTokenValid(refreshToken, userDetails.getUsername())) {
-                // todo: 새로운 accessToken, refreshToken 반환
+                String newAccessToken = jwtUtil.generateAccessToken(userDetails);
+                chain.doFilter(req, resp);
+                JsonObject tokenInfo = new JsonObject();
+                // todo: 이 Json 처리 테스트 필요
+                tokenInfo.add("accessToken", JsonParser.parseString(newAccessToken));
+                String tokenInfoStr = tokenInfo.getAsString();
+                resp.setContentType("application/json");
+                resp.setContentLength(tokenInfoStr.length());
+                resp.getOutputStream().write(tokenInfoStr.getBytes());
+                return;
             }
-            throw new RuntimeException();  // todo: refreshToken 이 valid 하지 않을 때에도 Custom Exception 만들기
-        } catch (Exception e) {  // todo: findRefreshToken custom exception 만들면 여기도 그거 catch 하도록 하기
+            throw new JwtAuthException("USER ID MISMATCH IN REFRESH TOKEN: "+userDetails.getUsername());
+        } catch (JwtAuthException e) {
             chain.doFilter(req, resp);
             return;
         }
