@@ -32,7 +32,7 @@ public class UserRepositoryTest {
         user = User.builder()
                 .userId("elevne")
                 .password("1234")
-                .username("wonil")
+                .name("wonil")
                 .role(Role.ROLE_USER)
                 .build();
     }
@@ -43,7 +43,7 @@ public class UserRepositoryTest {
         // given: @BeforeEach User 을 저장
         userRepository.save(user);
         // when: 해당 유저를 findByUsername 메소드로 조회
-        User user = userRepository.findByUsername("elevne")
+        User user = userRepository.findByName("elevne")
                 .orElseThrow(() -> new UsernameNotFoundException("User with name 'elevne' is not found"));
         // then:
         assertEquals("elevne", user.getUsername());
@@ -58,7 +58,7 @@ public class UserRepositoryTest {
         User user2 = User.builder()
                         .userId("elevne")
                         .password("5678")
-                        .username("wonny")
+                        .name("wonny")
                         .role(Role.ROLE_USER)
                         .build();
         userRepository.save(user);
