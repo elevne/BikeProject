@@ -1,5 +1,7 @@
 package com.bike.bikeproject.controller;
 
+import com.bike.bikeproject.dto.JwtDTO;
+import com.bike.bikeproject.dto.LoginDTO;
 import com.bike.bikeproject.dto.UserDTO;
 import com.bike.bikeproject.entity.User;
 import com.bike.bikeproject.service.UserService;
@@ -44,6 +46,22 @@ public class AuthController {
         if (bindingResult.hasErrors()) { return ResponseEntity.badRequest().body("Invalid User ID or Password"); }
         User user = userService.signUp(userDTO);
         return ResponseEntity.ok(gson.toJson(user));
+    }
+
+    @Operation(tags = "AUTH",
+            summary = "User Sign-In", description = "유저 로그인 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @PostMapping("/signin")
+    public ResponseEntity<JwtDTO> signIn(
+            @RequestBody @Valid LoginDTO loginDTO,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok(userService.authenticate(loginDTO));
     }
 
 }

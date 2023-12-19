@@ -38,7 +38,6 @@ public class BikeAPIUtilImpl implements BikeApiUtil {
     private final RestTemplate restTemplate;
 
     public BikeAPIUtilImpl(RestTemplateBuilder restTemplateBuilder) {
-        // todo: 이 부분 다시 공부하기 (변경필요하면 이후에 반영)
         this.restTemplate = restTemplateBuilder
                 // BufferingClientHttpRequestFactory: HTTP 요청을 버퍼링하는 데 사용 / 실제 요청은 내부적으로 다른 ClientHttpRequestFactory 사용
                 // 생성된 요청은 버퍼에 저장 / 버퍼링은 주로 디버깅 및 로깅을 위해 사용

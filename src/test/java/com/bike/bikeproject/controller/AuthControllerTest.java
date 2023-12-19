@@ -48,7 +48,7 @@ public class AuthControllerTest {
         user = User.builder()
                 .userId("cwi5525")
                 .password("pwd1234!")
-                .username("elevne")
+                .name("elevne")
                 .build();
         userDTO = new UserDTO("cwi5525", "pwd1234!", "elevne");
     }

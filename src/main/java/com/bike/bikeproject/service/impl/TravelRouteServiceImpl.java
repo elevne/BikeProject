@@ -57,7 +57,6 @@ public class TravelRouteServiceImpl implements TravelRouteService {
     private class TSP {
         private List<Integer> order = Collections.emptyList();
         private double totalDistance = 0d;
-
         public void setOrderAndTotalDistance(double[][] distanceMap) {
             // 출발지를 포함한 총 여행지의 수
             int count = distanceMap.length;
