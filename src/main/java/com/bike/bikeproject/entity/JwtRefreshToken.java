@@ -7,9 +7,9 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
+@Builder
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtRefreshToken {
@@ -21,7 +21,6 @@ public class JwtRefreshToken {
     @Column(name = "token", unique = true)
     private String token;
 
-    // todo: String 으로 변경해야하는지 찾아보자
     private Instant expiryDate;
 
     private String userId;

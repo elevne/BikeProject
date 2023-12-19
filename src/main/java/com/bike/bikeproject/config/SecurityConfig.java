@@ -1,6 +1,5 @@
 package com.bike.bikeproject.config;
 
-import com.bike.bikeproject.entity.Role;
 import com.bike.bikeproject.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.HashMap;
 import java.util.Map;
 
-// REST API 구축이 목표이기에 JWT 기반 인증방식이 적합할 것으로 판단됨
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -42,8 +40,7 @@ public class SecurityConfig {
                 .antMatchers("/auth", "/auth/**").permitAll()
                 .antMatchers("/bike/admin/**").hasRole("ADMIN")
                 .antMatchers("/bike/**").hasAnyRole("ADMIN", "USER")
-                //.antMatchers("/v2/api-docs/**", "/swagger-ui/**", "swagger-resources/**").hasRole("ADMIN")
-                .antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll() // todo: 테스트 후 ADMIN 용으로만 막아두기
+                .antMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .anyRequest().authenticated();
         http
                 .sessionManagement()
